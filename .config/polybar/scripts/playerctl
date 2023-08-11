@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+playerctlstatus=$(playerctl status 2> /dev/null)
+
+if [[ $playerctlstatus ==  "" ]]; then
+    echo "󰎊 Nothing to play"
+elif [[ $playerctlstatus == "Playing" ]]; then
+    echo "%{A1:playerctl previous:}󰒮%{A} %{A1:playerctl pause:}%{A} %{A1:playerctl --player=chromium,%any next:}󰒭%{A} $(playerctl metadata title)"
+else
+    echo "%{A1:playerctl previous:}󰒮%{A} %{A1:playerctl play:}▶️%{A} %{A1:playerctl --player=chromium,%any next:}󰒭%{A} $(playerctl metadata title)"
+fi
