@@ -1,2 +1,2 @@
 # dotfiles
-![plot](./screenshots/screenshot-1.png)
+![](../master/screenshots/screenshot-1.png)
