@@ -1,0 +1,26 @@
+# Github @amineboucenna
+
+#!/bin/bash
+
+# Set the country and the city
+# visit https://www.islamicfinder.org/world/ for more information
+
+country="Algeria"
+city="Algiers"
+
+
+url="https://www.islamicfinder.org/world/${country}/"
+
+curl -s "$url" > page.html
+
+# Emojis
+emojis=("󰖜" "󱟿" "󱩸" "󰖚" "")
+
+
+grep -A20 "title= 'Prayer Times ${city}'>${city}</a></td>" page.html |
+    sed -n -E 's/.*([0-9]{2}:[0-9]{2} (AM|PM))<\/td>/\1/p' |
+    awk 'NR != 2 && NR != 7' |
+    awk -v emojis="${emojis[*]}" 'BEGIN{split(emojis, e); i=1} {print e[i], $0; i=(i%length(e))+1}' |
+    tr '\n' ' '
+
+rm page.html
