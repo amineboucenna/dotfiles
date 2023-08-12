@@ -1,0 +1,5 @@
+#required
+polybar bspwm lxappearance ttf-font-awesome nerd-fonts pulseaudio brightnessctl blueman pavucontrol picom nitrogen
+
+#optional
+#kitty fish pcmanfm papirus-icon-theme capitaine-cursors 
