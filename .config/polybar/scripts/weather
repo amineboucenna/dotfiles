@@ -1,0 +1,111 @@
+# Github @amineboucenna
+#!/bin/bash
+
+# Change your API_KEY by creating an account https://api.openweathermap.org
+API_KEY=""
+
+# Coordinates (latitude and longitude)
+# They are available on the openweathermap website
+LATITUDE=""
+LONGITUDE=""
+
+
+
+# OpenWeatherMap API
+API_URL="https://api.openweathermap.org/data/2.5/forecast"
+
+
+
+# Function to get weather icon based on weather condition code
+get_weather_icon() {
+    local weather_code="$1"
+
+    case "$weather_code" in
+        800) echo "󰖙";;   # Clear sky
+        801) echo "";;   # Few clouds
+        802) echo "";;   # Scattered clouds
+        803|804) echo "";;   # Broken or overcast clouds
+        701|721|731|741|751|761|762|771|781) echo "";;  # Mist, haze, fog, etc.
+        711) echo "";;   # Smoke
+        731|751|761|762) echo "";;   # Dust or sand
+        762) echo "";;   # Volcanic ash
+        771) echo "";;   # Squalls
+        781) echo "";;   # Tornado
+        600|601|602) echo "";;   # Snow
+        611|612|613|615|616|620|621|622) echo "";;   # Sleet or shower snow
+        500|501|502|503|504) echo "";;   # Rain
+        520|521|522|531) echo "";;   # Showers
+        300|301|302|310|311|312|313|314|321) echo "";;   # Drizzle
+        *) echo "Unknown";;
+    esac
+}
+
+
+
+# Function to get wind direction based on wind degrees
+get_wind_direction() {
+    local wind_degrees="$1"
+
+    if (( $(echo "$wind_degrees >= 337.5" | bc -l) )) || (( $(echo "$wind_degrees < 22.5" | bc -l) )); then
+        echo ""
+    elif (( $(echo "$wind_degrees >= 22.5" | bc -l) )) && (( $(echo "$wind_degrees < 67.5" | bc -l) )); then
+        echo ""
+    elif (( $(echo "$wind_degrees >= 67.5" | bc -l) )) && (( $(echo "$wind_degrees < 112.5" | bc -l) )); then
+        echo ""
+    elif (( $(echo "$wind_degrees >= 112.5" | bc -l) )) && (( $(echo "$wind_degrees < 157.5" | bc -l) )); then
+        echo ""
+    elif (( $(echo "$wind_degrees >= 157.5" | bc -l) )) && (( $(echo "$wind_degrees < 202.5" | bc -l) )); then
+        echo ""
+    elif (( $(echo "$wind_degrees >= 202.5" | bc -l) )) && (( $(echo "$wind_degrees < 247.5" | bc -l) )); then
+        echo ""
+    elif (( $(echo "$wind_degrees >= 247.5" | bc -l) )) && (( $(echo "$wind_degrees < 292.5" | bc -l) )); then
+        echo ""
+    elif (( $(echo "$wind_degrees >= 292.5" | bc -l) )) && (( $(echo "$wind_degrees < 337.5" | bc -l) )); then
+        echo ""
+    else
+        # Return error icon if wind degrees are not within the specified ranges
+        echo ""
+    fi
+}
+
+
+# Get weather data
+weather_data=$(curl -s "$API_URL?lat=$LATITUDE&lon=$LONGITUDE&appid=$API_KEY&units=metric")
+
+# Extract current temperature, temperature after 12 hours, wind speed, humidity
+current_temp=$(echo "$weather_data" | jq -r '.list[0].main.temp')
+temp_12h=$(echo "$weather_data" | jq -r '.list[1].main.temp')
+wind_speed=$(echo "$weather_data" | jq -r '.list[0].wind.speed')
+humidity=$(echo "$weather_data" | jq -r '.list[0].main.humidity')
+
+
+hour=$(date "+%H")
+is_day=false
+if (( hour >= 6 && hour <= 18 )); then
+    is_day=true
+fi
+
+# Get weather condition codes for both times
+weather_code_current=$(echo "$weather_data" | jq -r '.list[0].weather[0].id')
+weather_code_12h=$(echo "$weather_data" | jq -r '.list[1].weather[0].id')
+
+# Get weather icons
+weather_icon_current=$(get_weather_icon "$weather_code_current")
+weather_icon_12h=$(get_weather_icon "$weather_code_12h")
+
+# Determine the arrow based on temperature change
+if (( $(echo "$temp_12h > $current_temp" | bc -l) )); then
+    arrow="↗"
+else
+    arrow="↘"
+fi
+
+# Extract wind direction for the current time
+wind_degrees=$(echo "$weather_data" | jq -r '.list[0].wind.deg')
+
+# Get wind direction text
+wind_direction=$(get_wind_direction "$wind_degrees")
+
+
+# Print weather information with modified format including weather icons for both times
+echo "$weather_icon_current ${current_temp}°C ${arrow} $weather_icon_12h ${temp_12h}°C  ${wind_speed} Km/h $wind_direction $wind_degrees° 󰖌 ${humidity}%"
