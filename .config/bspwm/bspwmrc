@@ -1,0 +1,19 @@
+#! /bin/sh
+picom &
+nitrogen --restore &
+polybar top &
+polybar bottom &
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+bspc monitor -d  󰨞 󰝰 󰕼 
+
+bspc config border_width         0.5
+bspc config window_gap          0
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+
+bspc rule -a chromium desktop='^1'
+bspc rule -a code desktop='^2'
