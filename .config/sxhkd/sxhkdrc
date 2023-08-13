@@ -4,16 +4,15 @@
 # powermenu 
 alt + 0
 	rofi -show power-menu -modi power-menu:~/.config/polybar/scripts/rofi-power-menu
-# terminal emulator
+# pkill polybar
 alt + shift + d
-	pkill polybar
-
+	pkill polybar ; polybar top & polybar bottom &
 # terminal emulator
 alt + Return
 	kitty
 alt + e
 	pcmanfm
-# screen shot
+# screenshot
 alt + shift + s
 	flameshot gui
 # program launcher
@@ -67,7 +66,7 @@ super + ctrl + {m,x,y,z}
 #
 
 # focus the node in the given direction
-super + {_,shift + }{h,j,k,l}
+alt + {_,shift + }{Left,Down,Up,Right}
 	bspc node -{f,s} {west,south,north,east}
 
 # focus the node for the given path jump
@@ -101,19 +100,19 @@ alt + {_,shift + }{1-9,0}
 #
 
 # preselect the direction
-super + ctrl + {h,j,k,l}
+alt + super + {Left,Down,Up,Right}
 	bspc node -p {west,south,north,east}
 
-# preselect the ratio
-super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
-
 # cancel the preselection for the focused node
-super + ctrl + space
+ctrl + space
 	bspc node -p cancel
 
+# preselect the ratio
+alt + super + {1-9}
+	bspc node -o 0.{1-9}
+
 # cancel the preselection for the focused desktop
-super + ctrl + shift + space
+ctrl + space + super
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
 #
